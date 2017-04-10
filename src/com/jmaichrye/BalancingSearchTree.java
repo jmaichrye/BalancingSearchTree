@@ -34,25 +34,69 @@ public class BalancingSearchTree {
             Top = new Node(newInt);
         }
         //new integer is less than the root value
-        else if(newInt > Top.value){
+        else if(newInt < Top.value){
             //insert the value in the left node
             Top.leftNode = insert(newInt , Top.leftNode);
 
+            //if height difference is more than 2, balancing is needed
+            if( height(Top.leftNode)-height(Top.rightNode)>1){
+
+                //left left case
+                if(newInt < Top.leftNode.value){
+                    //rotate right
+                    Top = rotateRightNode(Top);
+                }
+                else{
+                    // left rotate for left side of root
+                    Top.leftNode = rotateLeftNode(Top.leftNode);
+                    // right rotate for the root node
+                    Top = rotateRightNode(Top);
+                }
+
+
+            }
+
         }
         //new integer is greater than the root value
-        else if(newInt < Top.value){
+        else if(newInt > Top.value){
             //insert the value in the right node
             Top.rightNode = insert(newInt , Top.rightNode);
 
+            //if height difference is more than 2, balancing is needed
+            if( height(Top.rightNode)-height(Top.leftNode)>1){
+
+                //left left case
+                if(newInt > Top.rightNode.value){
+                    //rotate left
+                    Top = rotateLeftNode(Top);
+                }
+                else{
+                    // left rotate for right side of root
+                    Top.rightNode = rotateRightNode(Top.rightNode);
+                    // left rotate for the root node
+                    Top = rotateLeftNode(Top);
+                }
+
+
+            }
+
 
         }
-        //root is equal to the new value, do nothing
         else{
-
+            //root is equal to the new value, do nothing
         }
 
         Top.height = max(height(Top.leftNode), height(Top.rightNode)) + 1;
         return Top;
+
+    }
+
+    private Node rotateLeftNode(Node Top) {
+
+
+    }
+
+    private Node rotateRightNode(Node top) {
 
     }
 
@@ -68,7 +112,23 @@ public class BalancingSearchTree {
 
     //seach for an existing value
     public void search(int searchInt) {
+
+        System.out.println("The value " + searchInt + " exists: " + search(searchInt, rootNode));
     }
+
+    private boolean search(int searchInt, Node Top) {
+        if(Top==null){
+            return false;
+        }
+        else if(Top.value==searchInt){
+            return true;
+        }
+        else{
+            return search(searchInt,Top.leftNode) || search(searchInt,Top.rightNode);
+        }
+
+    }
+
 
     //return root node count
     public int nodeCount() {
@@ -99,15 +159,15 @@ public class BalancingSearchTree {
 
     //public access to print the tree in order
     public void printInOrder() {
-        printInOrder(rootNode);
+        printInOrder(rootNode, "   ");
     }
 
     //recursive printing method
-    private void printInOrder(Node rootNode) {
+    private void printInOrder(Node rootNode, String height) {
         if(rootNode!=null){
-            printInOrder(rootNode.leftNode);
-            System.out.println(rootNode.value);
-            printInOrder(rootNode.rightNode);
+            printInOrder(rootNode.leftNode,height +"   ");
+            System.out.println(height + rootNode.value);
+            printInOrder(rootNode.rightNode, height + "   ");
         }
     }
 }
