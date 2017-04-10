@@ -41,18 +41,17 @@ public class BalancingSearchTree {
             //if height difference is more than 2, balancing is needed
             if( height(Top.leftNode)-height(Top.rightNode)>1){
 
-                //left left case
-                if(newInt < Top.leftNode.value){
-                    //rotate right
-                    Top = rotateRightNode(Top);
+                //left left condition - need to rotate tree to the right
+                if (newInt < Top.leftNode.value){
+                    Top = rotateRight( Top );
                 }
-                else{
-                    // left rotate for left side of root
-                    Top.leftNode = rotateLeftNode(Top.leftNode);
-                    // right rotate for the root node
-                    Top = rotateRightNode(Top);
+                //else left right condition
+                else {
+                    //rotate left node left first
+                    Top.leftNode = rotateLeft(Top.leftNode);
+                    //rotate the overall tree to the right
+                    Top = rotateRight(Top);
                 }
-
 
             }
 
@@ -65,19 +64,18 @@ public class BalancingSearchTree {
             //if height difference is more than 2, balancing is needed
             if( height(Top.rightNode)-height(Top.leftNode)>1){
 
-                //left left case
-                if(newInt > Top.rightNode.value){
-                    //rotate left
-                    Top = rotateLeftNode(Top);
+                //Right Right condition
+                if (newInt > Top.rightNode.value) {
+                    Top = rotateLeft(Top);
                 }
-                else{
-                    // left rotate for right side of root
-                    Top.rightNode = rotateRightNode(Top.rightNode);
-                    // left rotate for the root node
-                    Top = rotateLeftNode(Top);
+                //else right left condition
+                else {
+                    //rotate right node to the right first
+                    Top.rightNode = rotateRight(Top.rightNode);
+
+                    //rotate the overall tree to the left
+                    Top = rotateLeft(Top);
                 }
-
-
             }
 
 
@@ -86,24 +84,64 @@ public class BalancingSearchTree {
             //root is equal to the new value, do nothing
         }
 
+        //New height of the tree is the max of each side's height plus 1
         Top.height = max(height(Top.leftNode), height(Top.rightNode)) + 1;
+
+        //return the changed tree
         return Top;
 
     }
 
-    private Node rotateLeftNode(Node Top) {
 
+    /* Rotate binary tree node with left child */
+    private Node rotateRight(Node topNode)
+    {
+        //left node moves to the top of new node
+        Node newNode = topNode.leftNode;
 
+        //Have to replace topNode.leftNode as it moved to teh top new newNode tree
+        //Top.left.right replaces original Top,left value
+        topNode.leftNode = newNode.rightNode;
+
+        // Original top node moves to the right side of the new node
+        newNode.rightNode = topNode;
+
+        //new top node max - max height of each children plus 1
+        topNode.height = max( height( topNode.leftNode ), height( topNode.rightNode ) ) + 1;
+
+        //new node's height -  max height of the left side and the height of the right node which is the
+        //original top node
+        newNode.height = max( height( newNode.leftNode ), height( newNode.rightNode ) ) + 1;
+        return newNode;
     }
 
-    private Node rotateRightNode(Node top) {
+    /* Rotate binary tree node with right child */
+    private Node rotateLeft(Node topNode)
+    {
+        //right node moves to the top of the new node
+        Node newNode = topNode.rightNode;
 
+        // Replace the topNode.right node as this has moved to the top of the newNode tree
+        //Top.right.left moves to the right node of the top node
+        topNode.rightNode = newNode.leftNode;
+
+        //Original top node moves to the left side of the tree completing the left rotation
+        newNode.leftNode = topNode;
+
+        //calculate the top node's new height
+        topNode.height = max( height( topNode.leftNode ), height( topNode.rightNode ) ) + 1;
+
+        //new node's height -  max height of the right side and the height of the left node which is the
+        //original top node
+        newNode.height = max( height( newNode.rightNode ), height( newNode.rightNode) ) + 1;
+        return newNode;
     }
+
 
     //To avoid null pointer exceptions on returning left and right node's heights
     private int height(Node node) {
         if(node==null){
-            return 0;
+            return -1;
         }
         else{
             return node.height;
@@ -147,15 +185,6 @@ public class BalancingSearchTree {
         }
     }
 
-    //check if the tree is empty
-    public boolean isEmpty() {
-        if(rootNode==null){
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
 
     //public access to print the tree in order
     public void printInOrder() {

@@ -15,7 +15,7 @@ public class Main {
         //y is continue.  n is to stop.
         String choice = "y";
 
-        while(choice.equals("y") || choice.equals("Y") ){
+        while(!(choice.equals("n") || choice.equals("N") )){
             System.out.println("Please select a choice");
             System.out.println("1. Insert integer to the tree");
             System.out.println("2. Search the tree");
@@ -45,7 +45,7 @@ public class Main {
 
 
             System.out.println("Do you want to continue interacting with the tree?");
-            System.out.println("y or Y for yes");
+            System.out.println("To exit, please enter n or N");
             choice = scan.next();
         }
 
